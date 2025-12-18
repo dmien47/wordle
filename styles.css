@@ -1,0 +1,63 @@
+body {
+  background-color: #000000;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  border-bottom: 2px solid #ffffff;
+  color: #ffffff;
+  padding-bottom: 10px;
+  width: 300px;
+  margin: 100px auto;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: calc(5 * 60px + 4 * 12px);
+  margin: 40px auto 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(5, 60px);
+  gap: 12px;
+}
+
+.tile {
+  width: 60px;
+  height: 60px;
+
+  background-color: #3a3a3c;
+  border: 2px solid #ffffff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.tile.present {
+  background-color: #b59f3b;
+  color: #ffffff;
+}
+
+.tile.correct {
+  background-color: #538d4e;
+  color: #ffffff;
+}
+
+.game {
+  text-align: center;
+}
+
+.hidden_input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
