@@ -16,7 +16,7 @@ let wordToGuess = "";
 let currentRow = 0;
 
 input.addEventListener("input", () => {
-  if (!isLetter(input.value.slice(-1))) {
+  if (input.value.length > 0 && !isLetter(input.value.slice(-1))) {
     input.value = input.value.slice(0, -1);
     return;
   }
