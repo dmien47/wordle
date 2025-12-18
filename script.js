@@ -16,17 +16,22 @@ let wordToGuess = "";
 let currentRow = 0;
 
 input.addEventListener("input", () => {
+  if (!isLetter(input.value.slice(-1))) {
+    input.value = input.value.slice(0, -1);
+    return;
+  }
+
   const value = input.value.toUpperCase();
   const tiles = getCurrentRowTiles();
+
   tiles.forEach((tile, i) => {
     tile.textContent = value[i] || "";
   });
 });
 
 input.addEventListener("keydown", e => {
-  console.log("keydown:", e.key, "value:", input.value);
-
   const valueLength = input.value.length;
+
   if (e.key === "Enter" && valueLength === 5) {
     e.preventDefault();
     submitGuess(input.value.toUpperCase());
@@ -34,13 +39,8 @@ input.addEventListener("keydown", e => {
 });
 
 async function submitGuess(guess) {
-  console.log("submitGuess start:", guess);
-
   const tiles = getCurrentRowTiles();
   const success = await checkGuess(guess, tiles);
-
-  console.log("submitGuess after checkGuess, success =", success);
-
   if (!success) return;
 
   if (guess === wordToGuess) {
@@ -54,18 +54,14 @@ async function submitGuess(guess) {
   rows[currentRow].classList.add("submitted");
   currentRow++;
   input.value = "";
+
   if (currentRow === rows.length) {
     alert(`Game Over! The word was ${wordToGuess}`);
   }
-
-  console.log("Moved to row:", currentRow);
 }
 
 async function checkGuess(guess, tiles) {
-  console.log("checkGuess start:", guess);
-
   const valid = await isValidWord(guess);
-  console.log("word valid?", valid);
 
   if (valid === false) {
     alert("Not a valid word");
@@ -73,14 +69,15 @@ async function checkGuess(guess, tiles) {
     return false;
   }
 
-  console.log("Building frequency map for:", wordToGuess);
   const map = buildFrequencyMap(wordToGuess);
+
   for (let i = 0; i < 5; i++) {
     if (guess[i] === wordToGuess[i]) {
       tiles[i].classList.add("correct");
       map.set(guess[i], map.get(guess[i]) - 1);
     }
   }
+
   for (let i = 0; i < 5; i++) {
     if (tiles[i].classList.contains("correct")) continue;
     if (map.get(guess[i]) > 0) {
@@ -109,26 +106,20 @@ async function getWordOfTheDay() {
 
 async function isValidWord(word) {
   try {
-    console.log("Validating word:", word);
-
     const response = await fetch(validURL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ word }),
     });
-
-    console.log("Validation response status:", response.status);
-
     const data = await response.json();
-    console.log("Validation response data:", data);
-
     return data.validWord;
   } catch (e) {
     console.error("Error validating word:", e);
     return false;
   }
+}
+
+function isLetter(char) {
+  return /^[a-zA-Z]$/.test(char);
 }
 
 const getCurrentRowTiles = () => rows[currentRow].querySelectorAll(".tile");
